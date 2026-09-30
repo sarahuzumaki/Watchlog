@@ -3,9 +3,11 @@ import TitleCard from './components/TitleCard.jsx'
 import TypeSwitch from './components/TypeSwitch.jsx'
 import StatusTabs from './components/StatusTabs.jsx'
 import LoginForm from './components/LoginForm.jsx'
+import SearchBar from './components/SearchBar.jsx'
 import { STATUSES } from './constants.js'
 import { supabase } from './supabase.js'
-import { fetchTitles } from './db.js'
+import { fetchTitles, insertTitle } from './db.js'
+import { getSeriesDetails } from './api/tmdb.js'
 import './App.css'
 
 function App() {
@@ -45,6 +47,23 @@ function App() {
   // Vrai si je suis connectée (donc autorisée à modifier)
   const isOwner = session !== null
 
+  // Les titres déjà ajoutés, sous la forme "source:id" (pour repérer les doublons)
+  const existingKeys = new Set(titles.map((item) => `${item.source}:${item.sourceId}`))
+
+  // Quand je clique sur un résultat de recherche
+  async function addFromSearch(result) {
+    let details = {}
+    // Pour une série, on demande à TMDB le nombre de saisons et d'épisodes
+    if (result.source === 'tmdb') {
+      details = await getSeriesDetails(result.sourceId)
+    }
+
+    // On enregistre dans Supabase, dans l'onglet où je me trouve
+    const saved = await insertTitle({ ...result, ...details, type, status })
+    // (prev) = la liste la plus à jour, même si elle a changé pendant l'attente
+    setTitles((prev) => [...prev, saved])
+  }
+
   // 1) On garde seulement les titres de la bonne liste (séries OU anime)
   const titlesOfType = titles.filter((item) => item.type === type)
 
@@ -81,6 +100,12 @@ function App() {
         <h1 className="logo">Watchlog</h1>
         <TypeSwitch value={type} onChange={setType} />
       </header>
+
+      {/* La recherche n'existe que si je suis connectée.
+          key={type} : la barre repart de zéro quand je change de liste */}
+      {isOwner && (
+        <SearchBar key={type} type={type} existingKeys={existingKeys} onPick={addFromSearch} />
+      )}
 
       <div className="toolbar">
         <StatusTabs value={status} onChange={setStatus} counts={counts} />

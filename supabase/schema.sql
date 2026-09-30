@@ -53,3 +53,23 @@ create policy "Suppression par moi seulement"
   on titles for delete
   to authenticated
   using (auth.uid() = 'ecef866b-3517-4d7d-affb-83f8af9db401');
+
+-- ============================================================
+-- Réglages privés (ex. ma clé TMDB) : lisibles par MOI seulement.
+-- La clé n'est jamais écrite dans ce fichier : on l'ajoute à part.
+-- ============================================================
+
+create table private_settings (
+  name  text primary key, -- nom du réglage, ex. 'tmdb_api_key'
+  value text not null
+);
+
+-- Pas de GRANT pour les visiteurs (anon) : ils n'y ont aucun accès
+grant select on table private_settings to authenticated;
+
+alter table private_settings enable row level security;
+
+create policy "Lecture par moi seulement"
+  on private_settings for select
+  to authenticated
+  using (auth.uid() = 'ecef866b-3517-4d7d-affb-83f8af9db401');

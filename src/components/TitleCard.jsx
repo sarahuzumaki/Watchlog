@@ -20,7 +20,12 @@ function TitleCard({ item }) {
   return (
     <article className="card">
       {item.poster ? (
-        <img className="card-poster" src={item.poster} alt={`Affiche de ${item.title}`} />
+        <img
+          className="card-poster"
+          src={item.poster}
+          alt={`Affiche de ${item.title}`}
+          loading="lazy"
+        />
       ) : (
         // Pas d'affiche : un rectangle gris avec le nom à la place
         <div className="card-poster card-poster--empty">{item.title}</div>

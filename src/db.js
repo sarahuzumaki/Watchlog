@@ -29,3 +29,28 @@ export async function fetchTitles() {
   if (error) throw error
   return data.map(fromRow)
 }
+
+// Ajoute un titre et renvoie la ligne créée.
+export async function insertTitle(item) {
+  const { data, error } = await supabase
+    .from('titles')
+    .insert({
+      type: item.type,
+      status: item.status,
+      title: item.title,
+      poster: item.poster,
+      total_episodes: item.totalEpisodes,
+      total_seasons: item.totalSeasons,
+      source: item.source,
+      source_id: item.sourceId,
+    })
+    .select()
+    .single()
+
+  if (error) {
+    // Code 23505 = ce titre existe déjà (règle "unique" de la table)
+    if (error.code === '23505') throw new Error('Ce titre est déjà dans ta liste.')
+    throw new Error("Impossible d'ajouter ce titre.")
+  }
+  return fromRow(data)
+}
