@@ -12,6 +12,7 @@ function fromRow(row) {
     poster: row.poster,
     totalEpisodes: row.total_episodes,
     totalSeasons: row.total_seasons,
+    seasonEpisodes: row.season_episodes, // épisodes par saison, ex. [10, 10, 8]
     season: row.season,
     episode: row.episode,
     source: row.source,
@@ -41,6 +42,7 @@ export async function insertTitle(item) {
       poster: item.poster,
       total_episodes: item.totalEpisodes,
       total_seasons: item.totalSeasons,
+      season_episodes: item.seasonEpisodes,
       source: item.source,
       source_id: item.sourceId,
     })
@@ -57,13 +59,17 @@ export async function insertTitle(item) {
 
 // Modifie le statut et la progression d'un titre, et renvoie la ligne à jour.
 export async function updateTitle(id, changes) {
+  const row = {
+    status: changes.status,
+    season: changes.season,
+    episode: changes.episode,
+  }
+  // Épisodes par saison : seulement s'ils sont fournis
+  if (changes.seasonEpisodes) row.season_episodes = changes.seasonEpisodes
+
   const { data, error } = await supabase
     .from('titles')
-    .update({
-      status: changes.status,
-      season: changes.season,
-      episode: changes.episode,
-    })
+    .update(row)
     .eq('id', id) // seulement la ligne qui a cet identifiant
     .select()
     .single()

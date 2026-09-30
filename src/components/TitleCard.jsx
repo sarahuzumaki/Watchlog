@@ -1,4 +1,5 @@
 // Une carte = une affiche + le nom + une ligne d'info selon le statut.
+import { getProgress } from '../progress.js'
 
 // Renvoie le petit texte affiché sous le nom.
 function getInfoText(item) {
@@ -19,6 +20,9 @@ function getInfoText(item) {
 // onClick est optionnel : s'il est fourni (quand je suis connectée),
 // la carte devient cliquable, à la souris comme au clavier.
 function TitleCard({ item, onClick }) {
+  // Barre de progression : seulement pour les titres "En cours"
+  const progress = item.status === 'En cours' ? getProgress(item) : null
+
   const clickProps = onClick
     ? {
         role: 'button',
@@ -52,6 +56,13 @@ function TitleCard({ item, onClick }) {
       <p className={item.status === 'Terminé' ? 'card-info card-info--done' : 'card-info'}>
         {getInfoText(item)}
       </p>
+
+      {progress !== null && (
+        <div className="progress" title={`${Math.round(progress * 100)} % vu`}>
+          {/* La largeur de la partie jaune = le pourcentage vu */}
+          <div className="progress-bar" style={{ width: `${progress * 100}%` }} />
+        </div>
+      )}
     </article>
   )
 }

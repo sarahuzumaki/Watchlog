@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../supabase.js'
+import { useEscapeKey } from '../useEscapeKey.js'
 
 // Fenêtre de connexion (réservée à moi : les inscriptions sont fermées).
 // - onClose : ferme la fenêtre
@@ -9,6 +10,7 @@ function LoginForm({ onClose }) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  useEscapeKey(onClose) // Échap ferme la fenêtre
 
   async function handleSubmit(event) {
     event.preventDefault() // empêche le rechargement de la page

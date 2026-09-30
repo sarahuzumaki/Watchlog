@@ -73,3 +73,13 @@ create policy "Lecture par moi seulement"
   on private_settings for select
   to authenticated
   using (auth.uid() = 'ecef866b-3517-4d7d-affb-83f8af9db401');
+
+-- ============================================================
+-- Étape 7 : nombre d'épisodes de chaque saison (pour la barre de progression)
+-- ex. {10, 10, 8} = saison 1 : 10 épisodes, saison 2 : 10, saison 3 : 8
+-- ============================================================
+
+alter table titles add column if not exists season_episodes integer[];
+
+-- Demande à Supabase de rafraîchir sa liste de colonnes
+notify pgrst, 'reload schema';

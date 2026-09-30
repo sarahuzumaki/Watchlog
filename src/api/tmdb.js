@@ -66,5 +66,9 @@ export async function getSeriesDetails(id) {
   return {
     totalEpisodes: serie.number_of_episodes,
     totalSeasons: serie.number_of_seasons,
+    // Épisodes de chaque saison (on ignore la "saison 0" = épisodes spéciaux)
+    seasonEpisodes: serie.seasons
+      .filter((s) => s.season_number > 0)
+      .map((s) => s.episode_count),
   }
 }

@@ -2,9 +2,34 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Watchlog</title>
+    <!-- Description affichée par Google et lors du partage d'un lien -->
+    <meta name="description" content="Watchlog : les séries et les anime que je regarde, et où j'en suis." />
+    <!-- Couleur de la barre du navigateur sur téléphone -->
+    <meta name="theme-color" content="#151412" />
+
+    <!-- Applique le thème clair tout de suite s'il a été choisi
+         (évite que la page clignote en sombre au chargement) -->
+    <script>
+      try {
+        if (localStorage.getItem('watchlog-theme') === 'light') {
+          document.documentElement.dataset.theme = 'light'
+          document.querySelector('meta[name="theme-color"]').content = '#faf9f6'
+        }
+      } catch {
+        // stockage bloqué : on reste en sombre
+      }
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Police Inter (gratuite, Google Fonts) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div id="root"></div>

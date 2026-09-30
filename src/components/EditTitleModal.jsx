@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { STATUSES } from '../constants.js'
+import { useEscapeKey } from '../useEscapeKey.js'
 
 // Fenêtre pour modifier un titre : statut, saison, épisode, suppression.
 // - item : le titre à modifier
@@ -14,6 +15,7 @@ function EditTitleModal({ item, onSave, onDelete, onClose }) {
   const [episode, setEpisode] = useState(item.episode)
   const [error, setError] = useState('')
   const [isBusy, setIsBusy] = useState(false) // requête en cours
+  useEscapeKey(onClose) // Échap ferme la fenêtre
 
   // Changer de statut, avec un petit automatisme
   function changeStatus(newStatus) {

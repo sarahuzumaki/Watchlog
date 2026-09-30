@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import TitleCard from './components/TitleCard.jsx'
 import TypeSwitch from './components/TypeSwitch.jsx'
+import ThemeToggle from './components/ThemeToggle.jsx'
+import Logo from './components/Logo.jsx'
 import StatusTabs from './components/StatusTabs.jsx'
 import LoginForm from './components/LoginForm.jsx'
 import SearchBar from './components/SearchBar.jsx'
@@ -10,6 +12,14 @@ import { supabase } from './supabase.js'
 import { fetchTitles, insertTitle, updateTitle, deleteTitle } from './db.js'
 import { getSeriesDetails } from './api/tmdb.js'
 import './App.css'
+
+// Message quand un onglet est vide, ex. "Aucune série en cours."
+function getEmptyText(type, status) {
+  const what = type === 'serie' ? 'Aucune série' : 'Aucun anime'
+  if (status === 'En cours') return `${what} en cours.`
+  if (status === 'Terminé') return type === 'serie' ? 'Aucune série terminée.' : 'Aucun anime terminé.'
+  return type === 'serie' ? 'Aucune série à commencer.' : 'Aucun anime à commencer.'
+}
 
 function App() {
   // Tous mes titres (chargés depuis Supabase)
@@ -69,6 +79,17 @@ function App() {
 
   // Enregistre les modifications, puis remplace l'ancien titre dans la liste
   async function saveEdit(changes) {
+    // Série ajoutée avant l'étape 7 : on récupère au passage
+    // le nombre d'épisodes de chaque saison (pour la barre de progression)
+    if (editingItem.source === 'tmdb' && !editingItem.seasonEpisodes) {
+      try {
+        const details = await getSeriesDetails(editingItem.sourceId)
+        changes = { ...changes, seasonEpisodes: details.seasonEpisodes }
+      } catch {
+        // Pas grave si ça échoue : on enregistre quand même le reste
+      }
+    }
+
     const updated = await updateTitle(editingItem.id, changes)
     setTitles((prev) => prev.map((item) => (item.id === updated.id ? updated : item)))
     setEditingItem(null)
@@ -100,7 +121,7 @@ function App() {
   } else if (loadError) {
     content = <p className="empty">{loadError}</p>
   } else if (visibleTitles.length === 0) {
-    content = <p className="empty">Rien ici pour l'instant.</p>
+    content = <p className="empty">{getEmptyText(type, status)}</p>
   } else {
     content = (
       <div className="grid">
@@ -119,8 +140,15 @@ function App() {
   return (
     <div className="app">
       <header className="header">
-        <h1 className="logo">Watchlog</h1>
-        <TypeSwitch value={type} onChange={setType} />
+        <h1 className="logo">
+          <Logo />
+          Watchlog
+        </h1>
+        {/* À droite : le choix Séries | Anime et le bouton de thème */}
+        <div className="header-actions">
+          <TypeSwitch value={type} onChange={setType} />
+          <ThemeToggle />
+        </div>
       </header>
 
       {/* La recherche n'existe que si je suis connectée.

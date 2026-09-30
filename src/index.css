@@ -1,21 +1,42 @@
 /* Styles de base pour tout le site */
 
-/* Les couleurs sont rangées dans des "variables" pour les changer facilement
-   (utile pour un futur mode sombre). */
+/* Les couleurs sont rangées dans des "variables".
+   Thème SOMBRE par défaut ; le thème clair remplace ces valeurs
+   quand <html data-theme="light"> (voir plus bas). */
 :root {
-  --bg: #faf9f6;          /* fond blanc cassé */
-  --text: #1a1a1a;        /* texte principal */
-  --text-muted: #6b6b6b;  /* texte secondaire */
-  --border: #e6e4df;      /* bordures légères */
-  --poster-bg: #ebe9e4;   /* fond des affiches vides */
-  --accent: #ffb000;      /* jaune orangé (texte noir dessus) */
+  --bg: #151412;          /* fond presque noir, légèrement chaud */
+  --surface: #1f1d1a;     /* fond des champs, menus, boutons */
+  --text: #f2f0eb;        /* texte principal */
+  --text-muted: #a19d95;  /* texte secondaire */
+  --border: #2e2b27;      /* bordures légères */
+  --poster-bg: #262420;   /* fond des affiches vides */
+  --accent: #ffb000;      /* jaune orangé */
+  --on-accent: #000;      /* texte noir sur le jaune */
+  --danger: #ff8a80;      /* rouge (supprimer, erreurs) */
+  --overlay: rgba(0, 0, 0, 0.6);             /* fond derrière les fenêtres */
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);   /* ombre des menus */
+  color-scheme: dark;     /* barres de défilement, champs… en sombre */
 
-  /* Une seule police : celle du système, simple et lisible */
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Une seule police : Inter (celle du système en attendant qu'elle charge) */
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   font-size: 16px;
   line-height: 1.5;
   color: var(--text);
   background: var(--bg);
+}
+
+/* Thème CLAIR (quand je clique sur le soleil) */
+:root[data-theme='light'] {
+  --bg: #faf9f6;          /* fond blanc cassé */
+  --surface: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #6b6b6b;
+  --border: #e6e4df;
+  --poster-bg: #ebe9e4;
+  --danger: #b3261e;
+  --overlay: rgba(0, 0, 0, 0.3);
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  color-scheme: light;
 }
 
 * {

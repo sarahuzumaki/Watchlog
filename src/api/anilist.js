@@ -38,5 +38,6 @@ export async function searchAnime(text) {
     year: anime.seasonYear,
     totalEpisodes: anime.episodes, // peut être vide si l'anime est en cours de diffusion
     totalSeasons: 1, // sur AniList, chaque saison est un titre séparé
+    seasonEpisodes: anime.episodes ? [anime.episodes] : null,
   }))
 }
