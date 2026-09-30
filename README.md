@@ -1,16 +1,34 @@
-# React + Vite
+# Watchlog
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Un site pour suivre les séries et les anime que je regarde, et savoir où j'en suis.
 
-Currently, two official plugins are available:
+👉 **[Voir le site](https://sarahuzumaki.github.io/Watchlog/)**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Fonctionnalités
 
-## React Compiler
+- Deux listes séparées : **Séries** et **Anime**
+- Trois onglets : **En cours**, **Pas commencé**, **Terminé**
+- Progression par saison et épisode, avec une barre de progression
+- Recherche en direct avec affiches et nombre d'épisodes récupérés automatiquement :
+  [TMDB](https://www.themoviedb.org/) pour les séries, [AniList](https://anilist.co/) pour les anime
+- Liste publique en lecture ; ajout et modification réservés à mon compte
+- Thème sombre par défaut, thème clair au choix
+- Utilisable sur téléphone
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Technique
 
-## Expanding the Oxlint configuration
+- **React + Vite**
+- **Supabase** : base de données PostgreSQL et connexion
+  - Lecture publique, écriture réservée à mon compte grâce aux règles
+    _Row Level Security_ (voir [`supabase/schema.sql`](supabase/schema.sql))
+  - Inscriptions désactivées
+  - La clé TMDB est stockée dans une table lisible uniquement par mon compte :
+    elle n'apparaît jamais dans le code publié
+- **GitHub Actions** : construction et mise en ligne automatiques sur **GitHub Pages**
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Lancer le projet en local
+
+1. `npm install`
+2. Copier `.env.example` en `.env` et y mettre l'URL et la clé publique (Publishable key) du projet Supabase
+3. Créer les tables avec [`supabase/schema.sql`](supabase/schema.sql) dans l'éditeur SQL de Supabase
+4. `npm run dev`
