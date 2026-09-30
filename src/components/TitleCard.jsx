@@ -16,9 +16,25 @@ function getInfoText(item) {
   return `${item.totalEpisodes} épisode${plural}`
 }
 
-function TitleCard({ item }) {
+// onClick est optionnel : s'il est fourni (quand je suis connectée),
+// la carte devient cliquable, à la souris comme au clavier.
+function TitleCard({ item, onClick }) {
+  const clickProps = onClick
+    ? {
+        role: 'button',
+        tabIndex: 0, // la carte peut recevoir le focus avec Tab
+        onClick,
+        onKeyDown: (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            onClick()
+          }
+        },
+      }
+    : {}
+
   return (
-    <article className="card">
+    <article className={onClick ? 'card card--clickable' : 'card'} {...clickProps}>
       {item.poster ? (
         <img
           className="card-poster"

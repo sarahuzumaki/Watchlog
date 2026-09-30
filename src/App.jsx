@@ -4,9 +4,10 @@ import TypeSwitch from './components/TypeSwitch.jsx'
 import StatusTabs from './components/StatusTabs.jsx'
 import LoginForm from './components/LoginForm.jsx'
 import SearchBar from './components/SearchBar.jsx'
+import EditTitleModal from './components/EditTitleModal.jsx'
 import { STATUSES } from './constants.js'
 import { supabase } from './supabase.js'
-import { fetchTitles, insertTitle } from './db.js'
+import { fetchTitles, insertTitle, updateTitle, deleteTitle } from './db.js'
 import { getSeriesDetails } from './api/tmdb.js'
 import './App.css'
 
@@ -23,6 +24,8 @@ function App() {
   const [session, setSession] = useState(null)
   // La fenêtre de connexion est-elle ouverte ?
   const [isLoginOpen, setIsLoginOpen] = useState(false)
+  // Le titre ouvert dans la fenêtre de modification (null = fermée)
+  const [editingItem, setEditingItem] = useState(null)
 
   // Au démarrage : on charge la liste depuis Supabase
   useEffect(() => {
@@ -64,6 +67,20 @@ function App() {
     setTitles((prev) => [...prev, saved])
   }
 
+  // Enregistre les modifications, puis remplace l'ancien titre dans la liste
+  async function saveEdit(changes) {
+    const updated = await updateTitle(editingItem.id, changes)
+    setTitles((prev) => prev.map((item) => (item.id === updated.id ? updated : item)))
+    setEditingItem(null)
+  }
+
+  // Supprime le titre, puis le retire de la liste
+  async function removeEditing() {
+    await deleteTitle(editingItem.id)
+    setTitles((prev) => prev.filter((item) => item.id !== editingItem.id))
+    setEditingItem(null)
+  }
+
   // 1) On garde seulement les titres de la bonne liste (séries OU anime)
   const titlesOfType = titles.filter((item) => item.type === type)
 
@@ -88,7 +105,12 @@ function App() {
     content = (
       <div className="grid">
         {visibleTitles.map((item) => (
-          <TitleCard key={item.id} item={item} />
+          <TitleCard
+            key={item.id}
+            item={item}
+            // Cliquable seulement si je suis connectée
+            onClick={isOwner ? () => setEditingItem(item) : undefined}
+          />
         ))}
       </div>
     )
@@ -130,6 +152,15 @@ function App() {
       </footer>
 
       {isLoginOpen && <LoginForm onClose={() => setIsLoginOpen(false)} />}
+
+      {editingItem && (
+        <EditTitleModal
+          item={editingItem}
+          onSave={saveEdit}
+          onDelete={removeEditing}
+          onClose={() => setEditingItem(null)}
+        />
+      )}
     </div>
   )
 }

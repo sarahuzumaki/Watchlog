@@ -54,3 +54,26 @@ export async function insertTitle(item) {
   }
   return fromRow(data)
 }
+
+// Modifie le statut et la progression d'un titre, et renvoie la ligne à jour.
+export async function updateTitle(id, changes) {
+  const { data, error } = await supabase
+    .from('titles')
+    .update({
+      status: changes.status,
+      season: changes.season,
+      episode: changes.episode,
+    })
+    .eq('id', id) // seulement la ligne qui a cet identifiant
+    .select()
+    .single()
+
+  if (error) throw new Error("Impossible d'enregistrer les modifications.")
+  return fromRow(data)
+}
+
+// Supprime un titre.
+export async function deleteTitle(id) {
+  const { error } = await supabase.from('titles').delete().eq('id', id)
+  if (error) throw new Error('Impossible de supprimer ce titre.')
+}
