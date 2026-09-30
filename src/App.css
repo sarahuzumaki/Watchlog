@@ -1,0 +1,308 @@
+/* Mise en page de l'application */
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 16px 64px;
+}
+
+/* En-tête : le nom à gauche, le choix Séries | Anime à droite */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; /* passe à la ligne si l'écran est trop étroit */
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.logo {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* ----- Choix Séries | Anime ----- */
+
+.type-switch {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #fff;
+}
+
+.type-switch-btn {
+  padding: 6px 18px;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.type-switch-btn.is-active {
+  background: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+
+/* ----- Onglets de statut ----- */
+
+/* Barre sous l'en-tête : onglets à gauche, bouton "Ajouter" à droite */
+.toolbar {
+  display: flex;
+  align-items: flex-end; /* tout est posé sur la ligne grise */
+  gap: 16px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.toolbar .btn {
+  flex-shrink: 0; /* le bouton garde sa taille */
+  margin-bottom: 8px;
+}
+
+.status-tabs {
+  flex: 1; /* prend toute la place restante */
+  display: flex;
+  gap: 24px;
+  overflow-x: auto; /* sur petit écran, on peut faire défiler */
+}
+
+.status-tab {
+  position: relative;
+  padding: 10px 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.status-tab.is-active {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Le trait jaune sous l'onglet actif */
+.status-tab.is-active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+
+.status-count {
+  margin-left: 6px;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.empty {
+  padding: 48px 0;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+/* La grille : autant de colonnes que la place le permet,
+   chaque carte fait au moins 140px de large. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 32px 20px;
+}
+
+/* ----- Carte ----- */
+
+.card-poster {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3; /* format d'une affiche */
+  object-fit: cover;
+  border-radius: 6px;
+  background: var(--poster-bg);
+}
+
+/* Affiche vide : le nom centré en gris */
+.card-poster--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.card-title {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.card-info {
+  margin-top: 2px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Petite mention "Terminé" */
+.card-info--done {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 1px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+
+/* Sur téléphone : cartes un peu plus petites */
+@media (max-width: 480px) {
+  .app {
+    padding-top: 24px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 24px 14px;
+  }
+}
+
+/* ----- Boutons ----- */
+
+.btn {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* Bouton principal : jaune avec texte noir */
+.btn-primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+
+/* ----- Fenêtre (modale) ----- */
+
+/* Fond gris transparent qui couvre toute la page */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.modal {
+  width: 100%;
+  max-width: 400px;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 24px;
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.modal-title {
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+/* ----- Champs du formulaire ----- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 14px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.field input,
+.field select {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  font-size: 1rem; /* 16px minimum : évite le zoom auto sur iPhone */
+  color: var(--text);
+}
+
+.field input:focus,
+.field select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+
+/* Saison et épisode côte à côte */
+.field-row {
+  display: flex;
+  gap: 12px;
+}
+
+.field-row .field {
+  flex: 1;
+}
+
+/* Message d'erreur dans un formulaire */
+.form-error {
+  margin-top: -4px;
+  font-size: 0.85rem;
+  color: #b3261e;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ----- Bas de page ----- */
+
+.footer {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 80px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Bouton qui ressemble à un simple lien */
+.link-btn {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: var(--text-muted);
+  text-decoration: underline;
+  cursor: pointer;
+}
